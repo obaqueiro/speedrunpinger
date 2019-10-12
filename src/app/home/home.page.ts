@@ -23,7 +23,7 @@ export class HomePage {
 
   constructor(private geolocation: Geolocation) {
    console.log('starting')
-    this.geoLocationIntervalHandler = setInterval(()=>{this.updateCurrentSpeed()},500)
+    this.geoLocationIntervalHandler = setInterval(()=>{this.updateCurrentSpeed()},700)
   }
 
   public startStop(){
@@ -110,17 +110,16 @@ export class HomePage {
 
 
  updateCurrentSpeed(){
+   //Dummy one, which will result in a working next statement.
+  this.geolocation.getCurrentPosition().then(()=>{});
   this.geolocation.getCurrentPosition({ maximumAge: 0, enableHighAccuracy: true }
     ).then(position => {
     this.speedsArray.push(position.coords.speed);
-    if(this.speedsArray.length > 10) {this.speedsArray.shift();}
+    if(this.speedsArray.length > 5) {this.speedsArray.shift();}
     let avgSpeed = this.speedsArray.reduce( ( p, c ) => p + c, 0 ) / this.speedsArray.length;
     this.currentSpeed = avgSpeed ? avgSpeed * 3.6: 0;
   });
  }
-
-
-
  
 exitApp() {
   navigator['app'].exitApp();
