@@ -1,14 +1,56 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Ionic Blank
+      RunSpeed Pinger
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+    <ion-item>
+      <ion-label>Target Speed (km/h):</ion-label>
+      <ion-input type="number" id="targetSpeed" inputmode="tel" [(ngModel)]="speed"> </ion-input>
+    </ion-item>
+
+
+    <ion-item>
+    <ion-range min="1" max="60" step="1" [(ngModel)]="intervalSeconds">
+        <ion-label range-left>1</ion-label>
+        <ion-label range-right>60</ion-label>
+    </ion-range>
+    {{intervalSeconds}}
+  </ion-item>
+
+    <ion-row>
+        <ion-col > 
+          <button ion-button color="default"  class="presetButton"  (click)="presetClick('preset1')" (press)="holdCount('preset1')" (touchend)="endCount()">
+            <b>{{preset1}}</b>
+          </button>
+        </ion-col>
+      
+        <ion-col >
+          <button ion-button color="default"  class="presetButton" (click)="presetClick('preset2')" (press)="holdCount('preset2')" (touchend)="endCount()">
+            <b>{{preset2}}</b>
+          </button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+          <ion-col > 
+            <h1>Current:</h1>
+            <h2>{{currentSpeed | number:'1.1-2' }}</h2>
+          </ion-col>
+        
+          <ion-col >
+            <h1>Target:</h1>
+            <h2>{{speed}}</h2>
+          </ion-col>
+        </ion-row>
   </div>
 </ion-content>
+<ion-footer>
+    
+    <ion-button class="goButton" slot="end" id="startStopButton" (click)="startStop()">{{buttonLabel}}</ion-button>
+    <ion-button color="danger" class="goButton" slot="end" id="startStopButton" (click)="exitApp()">Exit</ion-button>
+</ion-footer>
