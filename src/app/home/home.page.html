@@ -25,13 +25,13 @@
     <ion-row>
         <ion-col > 
           <button ion-button color="default"  class="presetButton"  (click)="presetClick('preset1')" (press)="holdCount('preset1')" (touchend)="endCount()">
-            <b>{{preset1}}</b>
+            <b>{{presets['preset1']}}</b>
           </button>
         </ion-col>
       
         <ion-col >
           <button ion-button color="default"  class="presetButton" (click)="presetClick('preset2')" (press)="holdCount('preset2')" (touchend)="endCount()">
-            <b>{{preset2}}</b>
+            <b>{{presets['preset2']}}</b>
           </button>
         </ion-col>
       </ion-row>

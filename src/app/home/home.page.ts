@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Storage } from '@ionic/storage';
+
 
 @Component({
   selector: 'app-home',
@@ -11,19 +13,29 @@ export class HomePage {
   isStarted:boolean = false;
   buttonLabel:string = 'Start';
   timeoutHandler:any;
-  count: number=0;
   speed: string = '7.2';
   currentSpeed: number=0;
-  preset1:string = 'Preset 1';
-  preset2:string = 'Preset 2';
+  presets = {
+    'preset1': "Preset 1",
+    'preset2': "Preset 2"
+  }
+  
   intervalSeconds:number = 15;
   geoLocationIntervalHandler: any;
 
+  pressStart:number;
+  
+
   speedsArray:number[] = [];
 
-  constructor(private geolocation: Geolocation) {
-   console.log('starting')
-    this.geoLocationIntervalHandler = setInterval(()=>{this.updateCurrentSpeed()},700)
+  constructor(private geolocation: Geolocation, private storage: Storage) {
+    console.log('starting')
+    this.geoLocationIntervalHandler = setInterval(()=>{this.updateCurrentSpeed()},700);
+    Object.keys(this.presets).forEach(key=>{
+        storage.get(key).then(item => { this.presets[key] = item}).catch(()=>{
+          this.presets[key] = 'Preset';
+        });
+    });
   }
 
   public startStop(){
@@ -64,48 +76,30 @@ export class HomePage {
   }
 
   presetClick(preset) {
-      switch (preset) {
-        case 'preset1': {
-           if(this.preset1 !='Preset 1') {
-             this.speed = this.preset1;
-           }
-           break;
-        }
-        case 'preset2': {
-          if(this.preset2 !='Preset 2') {
-            this.speed = this.preset2;
-          }
-            break;
-        }
+      if(!isNaN(this.presets[preset])) {
+        this.speed = this.presets[preset];
       }
   }
 
-  holdCount(preset){
-    if (this.count < 2)
-    {
-     setInterval(() => {
-      this.count++;
-      if ( this.count>= 2) {
-          switch (preset) {
-            case 'preset1': {
-               this.preset1 = this.speed;
-               break;
-            }
-            case 'preset2': {
-                this.preset2 = this.speed;
-                break;
-            }
-          } 
-          this.count = 0 ;
-      }
-    }, 200);
-  }
+  holdCount(preset: string){
+    console.log(this.pressStart);
+    if (!this.pressStart) {
+      this.pressStart = Date.now();
+    }
+    setTimeout(() => {
+        if(!this.pressStart) return;
+        this.presets[preset] = this.speed;
+        this.storage.set(preset, this.speed);
+        
+    }, 2000);
+    
+  
+  
  }
 
  endCount(){
-   if (this.timeoutHandler) {
-    this.timeoutHandler = null;
-  }
+   console.log('button up');
+   this.pressStart = undefined;
  }
 
 
